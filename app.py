@@ -7,7 +7,6 @@ import streamlit as st
 st.set_page_config(page_title="Breast Cancer Classification", page_icon="🔬")
 st.title("Breast Cancer Classification")
 st.write("Test a trained machine learning model using an example row or your own values.")
-st.warning("Educational demonstration only. This prediction is not a medical diagnosis.")
 
 folder = Path(__file__).parent
 
