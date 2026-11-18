@@ -23,7 +23,19 @@ except Exception as error:
     st.stop()
 
 samples = pd.read_csv(folder / "sample_rows.csv")
-features = ["l" + str(i) for i in range(1, 31)]
+# These are the names used in sample_rows.csv and on the screen.
+features = ["f" + str(i) for i in range(1, 31)]
+
+# Use the exact names and order learned by the saved model.
+model_features = list(getattr(model, "feature_names_in_", []))
+if not model_features and hasattr(model, "steps"):
+    model_features = list(getattr(model.steps[0][1], "feature_names_in_", []))
+if not model_features:
+    st.error("This model does not provide its training feature names. Please check the training notebook.")
+    st.stop()
+if len(model_features) != len(features):
+    st.error("The saved model expects a different number of features.")
+    st.stop()
 
 st.subheader("Choose input")
 mode = st.radio("Input method", ["Ready-made example", "Enter values manually"])
@@ -51,7 +63,8 @@ if mode == "Ready-made example":
     submitted = st.button("Predict")
 
 if submitted:
-    input_data = pd.DataFrame([values], columns=features)
+    # Preserve feature values in dataset order, but use names from training.
+    input_data = pd.DataFrame([[values[name] for name in features]], columns=model_features)
     try:
         result = int(model.predict(input_data)[0])
         if result == 0:
@@ -64,4 +77,3 @@ if submitted:
     except Exception as error:
         st.error("Prediction failed. Check that this model was trained on the same 30 columns, in the same order.")
         st.exception(error)
-
