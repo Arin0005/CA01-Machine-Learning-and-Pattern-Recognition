@@ -23,7 +23,7 @@ except Exception as error:
     st.stop()
 
 samples = pd.read_csv(folder / "sample_rows.csv")
-features = ["f" + str(i) for i in range(1, 31)]
+features = ["l" + str(i) for i in range(1, 31)]
 
 st.subheader("Choose input")
 mode = st.radio("Input method", ["Ready-made example", "Enter values manually"])
